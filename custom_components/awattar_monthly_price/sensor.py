@@ -52,6 +52,7 @@ class AwattarMonthlyNetPriceSensor(Entity):
     def __init__(self):
         self._state = None
         self._name = "aWATTar Monthly Net Price"
+        self._unique_id = "awattar_monthly_net_price"
 
     @property
     def name(self):
@@ -67,6 +68,11 @@ class AwattarMonthlyNetPriceSensor(Entity):
     def unit_of_measurement(self):
         """Return the unit of measurement."""
         return "cent/kWh"
+
+    @property
+    def unique_id(self):
+        """Return the unique ID of the sensor."""
+        return self._unique_id
 
     async def async_update(self):
         """Fetch the latest net price and update the sensor state."""
@@ -84,6 +90,7 @@ class AwattarMonthlyGrossPriceSensor(Entity):
     def __init__(self):
         self._state = None
         self._name = "aWATTar Monthly Gross Price"
+        self._unique_id = "awattar_monthly_gross_price"
 
     @property
     def name(self):
@@ -99,6 +106,11 @@ class AwattarMonthlyGrossPriceSensor(Entity):
     def unit_of_measurement(self):
         """Return the unit of measurement."""
         return "cent/kWh"
+
+    @property
+    def unique_id(self):
+        """Return the unique ID of the sensor."""
+        return self._unique_id
 
     async def async_update(self):
         """Fetch the latest gross price and update the sensor state."""
