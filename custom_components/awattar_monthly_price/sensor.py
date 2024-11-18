@@ -54,6 +54,7 @@ class AwattarMonthlyNetPriceSensor(Entity):
         self._state = None
         self._name = "aWATTar Monthly Net Price"
         self._unique_id = "awattar_monthly_net_price"
+        self._price_cent_per_kwh = None
 
     @property
     def name(self):
@@ -75,14 +76,22 @@ class AwattarMonthlyNetPriceSensor(Entity):
         """Return the unique ID of the sensor."""
         return self._unique_id
 
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        return {
+            "price_cent_per_kwh": self._price_cent_per_kwh
+        }
+
     async def async_update(self):
         """Fetch the latest net price and update the sensor state."""
         _LOGGER.debug("Updating monthly net price sensor...")
         net_price, _ = await fetch_prices(self._hass)
         if net_price is not None:
-            # Convert cent/kWh to eur/kWh
+            # Convert cent/kWh to eur/kWh and store both
             self._state = float(net_price) / 100
-            _LOGGER.info(f"Net price successfully updated: {self._state} eur/kWh")
+            self._price_cent_per_kwh = float(net_price)
+            _LOGGER.info(f"Net price successfully updated: {self._state} eur/kWh ({self._price_cent_per_kwh} cent/kWh)")
         else:
             _LOGGER.warning("Net price could not be updated.")
 
@@ -94,6 +103,7 @@ class AwattarMonthlyGrossPriceSensor(Entity):
         self._state = None
         self._name = "aWATTar Monthly Gross Price"
         self._unique_id = "awattar_monthly_gross_price"
+        self._price_cent_per_kwh = None
 
     @property
     def name(self):
@@ -115,13 +125,21 @@ class AwattarMonthlyGrossPriceSensor(Entity):
         """Return the unique ID of the sensor."""
         return self._unique_id
 
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        return {
+            "price_cent_per_kwh": self._price_cent_per_kwh
+        }
+
     async def async_update(self):
         """Fetch the latest gross price and update the sensor state."""
         _LOGGER.debug("Updating monthly gross price sensor...")
         _, gross_price = await fetch_prices(self._hass)
         if gross_price is not None:
-            # Convert cent/kWh to eur/kWh
+            # Convert cent/kWh to eur/kWh and store both
             self._state = float(gross_price) / 100
-            _LOGGER.info(f"Gross price successfully updated: {self._state} eur/kWh")
+            self._price_cent_per_kwh = float(gross_price)
+            _LOGGER.info(f"Gross price successfully updated: {self._state} eur/kWh ({self._price_cent_per_kwh} cent/kWh)")
         else:
             _LOGGER.warning("Gross price could not be updated.")
