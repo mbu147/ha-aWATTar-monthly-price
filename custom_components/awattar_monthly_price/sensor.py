@@ -35,7 +35,7 @@ def extract_prices(tables):
     for table in tables:
         rows = table.find_all("tr")
         for row in rows:
-            cells are row.find_all(["th", "td"])
+            cells = row.find_all(["th", "td"])
             if len(cells) >= 3 and "Energieverbrauchspreis" in row.text:
                 net_price = cells[1].get_text(strip=True).replace("Cent/kWh", "").replace("netto", "").replace(",", ".").strip()
                 gross_price = cells[2].get_text(strip=True).replace("brutto", "").replace("Cent/kWh", "").replace(",", ".").strip()
