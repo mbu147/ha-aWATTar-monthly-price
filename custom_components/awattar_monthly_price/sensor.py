@@ -35,7 +35,7 @@ def extract_prices(tables):
     for table in tables:
         rows = table.find_all("tr")
         for row in rows:
-            cells = row.find_all(["th", "td"])
+            cells are row.find_all(["th", "td"])
             if len(cells) >= 3 and "Energieverbrauchspreis" in row.text:
                 net_price = cells[1].get_text(strip=True).replace("Cent/kWh", "").replace("netto", "").replace(",", ".").strip()
                 gross_price = cells[2].get_text(strip=True).replace("brutto", "").replace("Cent/kWh", "").replace(",", ".").strip()
@@ -68,7 +68,7 @@ class AwattarMonthlyNetPriceSensor(Entity):
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
-        return "cent/kWh"
+        return "eur/kWh"
 
     @property
     def unique_id(self):
@@ -80,8 +80,9 @@ class AwattarMonthlyNetPriceSensor(Entity):
         _LOGGER.debug("Updating monthly net price sensor...")
         net_price, _ = await fetch_prices(self._hass)
         if net_price is not None:
-            self._state = net_price
-            _LOGGER.info(f"Net price successfully updated: {self._state} cent/kWh")
+            # Convert cent/kWh to eur/kWh
+            self._state = float(net_price) / 100
+            _LOGGER.info(f"Net price successfully updated: {self._state} eur/kWh")
         else:
             _LOGGER.warning("Net price could not be updated.")
 
@@ -107,7 +108,7 @@ class AwattarMonthlyGrossPriceSensor(Entity):
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
-        return "cent/kWh"
+        return "eur/kWh"
 
     @property
     def unique_id(self):
@@ -119,7 +120,8 @@ class AwattarMonthlyGrossPriceSensor(Entity):
         _LOGGER.debug("Updating monthly gross price sensor...")
         _, gross_price = await fetch_prices(self._hass)
         if gross_price is not None:
-            self._state = gross_price
-            _LOGGER.info(f"Gross price successfully updated: {self._state} cent/kWh")
+            # Convert cent/kWh to eur/kWh
+            self._state = float(gross_price) / 100
+            _LOGGER.info(f"Gross price successfully updated: {self._state} eur/kWh")
         else:
             _LOGGER.warning("Gross price could not be updated.")
