@@ -10,7 +10,7 @@
     "zip_release": false,
     "filename": "",
     "iot_class": "Cloud Polling",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "documentation": "https://github.com/mbu147/ha-aWATTar-monthly-price",
     "issue_tracker": "https://github.com/mbu147/ha-aWATTar-monthly-price/issues",
     "release_notes": "https://github.com/mbu147/ha-aWATTar-monthly-price/releases"

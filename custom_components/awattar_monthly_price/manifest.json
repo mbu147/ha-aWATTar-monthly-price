@@ -1,12 +1,10 @@
 {
   "domain": "awattar_monthly_price",
   "name": "aWATTar Monthly Price",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "documentation": "https://github.com/mbu147/ha-aWATTar-monthly-price",
-  "dependencies": [],
-  "after_dependencies": [],
   "requirements": ["beautifulsoup4"],
+  "dependencies": [],
   "codeowners": ["@mbu147"],
-  "iot_class": "cloud_polling",
-  "integration_type": "hub"
+  "iot_class": "cloud_polling"
 }
