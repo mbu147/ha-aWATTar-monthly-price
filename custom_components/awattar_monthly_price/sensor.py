@@ -8,7 +8,7 @@ _LOGGER = logging.getLogger(__name__)
 
 URL = "https://www.awattar.at/tariffs/monthly"
 
-async def fetch_prices():
+async def fetch_prices(hass):
     """Scrape the aWATTar website to extract both net and gross prices."""
     try:
         response = await hass.async_add_executor_job(requests.get, URL, {"timeout": 10})
@@ -44,12 +44,13 @@ def extract_prices(tables):
 
 async def async_setup_platform(hass: HomeAssistant, config, async_add_entities, discovery_info=None):
     """Set up the sensor platform."""
-    async_add_entities([AwattarMonthlyNetPriceSensor(), AwattarMonthlyGrossPriceSensor()])
+    async_add_entities([AwattarMonthlyNetPriceSensor(hass), AwattarMonthlyGrossPriceSensor(hass)])
 
 class AwattarMonthlyNetPriceSensor(Entity):
     """Representation of the aWATTar monthly net price sensor."""
 
-    def __init__(self):
+    def __init__(self, hass):
+        self._hass = hass
         self._state = None
         self._name = "aWATTar Monthly Net Price"
         self._unique_id = "awattar_monthly_net_price"
@@ -77,7 +78,7 @@ class AwattarMonthlyNetPriceSensor(Entity):
     async def async_update(self):
         """Fetch the latest net price and update the sensor state."""
         _LOGGER.debug("Updating monthly net price sensor...")
-        net_price, _ = await fetch_prices()
+        net_price, _ = await fetch_prices(self._hass)
         if net_price is not None:
             self._state = net_price
             _LOGGER.info(f"Net price successfully updated: {self._state} cent/kWh")
@@ -87,7 +88,8 @@ class AwattarMonthlyNetPriceSensor(Entity):
 class AwattarMonthlyGrossPriceSensor(Entity):
     """Representation of the aWATTar monthly gross price sensor."""
 
-    def __init__(self):
+    def __init__(self, hass):
+        self._hass = hass
         self._state = None
         self._name = "aWATTar Monthly Gross Price"
         self._unique_id = "awattar_monthly_gross_price"
@@ -115,7 +117,7 @@ class AwattarMonthlyGrossPriceSensor(Entity):
     async def async_update(self):
         """Fetch the latest gross price and update the sensor state."""
         _LOGGER.debug("Updating monthly gross price sensor...")
-        _, gross_price = await fetch_prices()
+        _, gross_price = await fetch_prices(self._hass)
         if gross_price is not None:
             self._state = gross_price
             _LOGGER.info(f"Gross price successfully updated: {self._state} cent/kWh")
