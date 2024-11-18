@@ -14,13 +14,7 @@ A Home Assistant integration that fetches monthly energy prices from aWATTar and
 
 4. **Complete the installation**: After adding the repository, you will find it under HACS integrations. Install the integration.
 
-5. **Add the configuration**: Add the following line to your `configuration.yaml`:
-   ```yaml
-   sensor:
-     - platform: awattar_monthly_price
-   ```
-
-6. **Restart Home Assistant**: Restart Home Assistant to load the integration.
+5. **Add the integration**: Add the configuration in Settings > Devices & Services:
 
 ### Manual Installation
 
