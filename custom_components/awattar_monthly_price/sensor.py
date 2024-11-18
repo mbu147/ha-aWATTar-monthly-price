@@ -8,7 +8,6 @@ _LOGGER = logging.getLogger(__name__)
 
 URL = "https://www.awattar.at/tariffs/monthly"
 
-
 async def fetch_prices():
     """Scrape the aWATTar website to extract both net and gross prices."""
     try:
@@ -31,7 +30,6 @@ async def fetch_prices():
         _LOGGER.error(f"Error while fetching prices: {e}")
         return None, None
 
-
 def extract_prices(tables):
     """Extract net and gross prices from tables."""
     for table in tables:
@@ -44,11 +42,9 @@ def extract_prices(tables):
                 return net_price, gross_price
     return None, None
 
-
 async def async_setup_platform(hass: HomeAssistant, config, async_add_entities, discovery_info=None):
     """Set up the sensor platform."""
     async_add_entities([AwattarMonthlyNetPriceSensor(), AwattarMonthlyGrossPriceSensor()])
-
 
 class AwattarMonthlyNetPriceSensor(Entity):
     """Representation of the aWATTar monthly net price sensor."""
@@ -82,7 +78,6 @@ class AwattarMonthlyNetPriceSensor(Entity):
         else:
             _LOGGER.warning("Net price could not be updated.")
 
-
 class AwattarMonthlyGrossPriceSensor(Entity):
     """Representation of the aWATTar monthly gross price sensor."""
 
@@ -114,4 +109,3 @@ class AwattarMonthlyGrossPriceSensor(Entity):
             _LOGGER.info(f"Gross price successfully updated: {self._state} cent/kWh")
         else:
             _LOGGER.warning("Gross price could not be updated.")
-
