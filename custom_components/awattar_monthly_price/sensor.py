@@ -49,17 +49,17 @@ async def async_setup_platform(hass: HomeAssistant, config, async_add_entities, 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up the aWATTar Monthly Price platform via config entry."""
-    await async_setup_platform(hass, {}, async_add_entities, entry.data)
+    await async_setup_platform(hass, entry.data, async_add_entities)
     return True
 
 class AwattarMonthlyNetPriceSensor(Entity):
     """Representation of the aWATTar monthly net price sensor."""
 
-    def __init__(self, hass):
+    def __init__(self, hass, config):
         self._hass = hass
         self._state = None
         self._name = "aWATTar Monthly Net Price"
-        self._unique_id = "awattar_monthly_net_price"
+        self._unique_id = f"awattar_monthly_net_price_{hash(URL)}"
         self._price_cent_per_kwh = None
 
     @property
@@ -104,11 +104,11 @@ class AwattarMonthlyNetPriceSensor(Entity):
 class AwattarMonthlyGrossPriceSensor(Entity):
     """Representation of the aWATTar monthly gross price sensor."""
 
-    def __init__(self, hass):
+    def __init__(self, hass, config):
         self._hass = hass
         self._state = None
         self._name = "aWATTar Monthly Gross Price"
-        self._unique_id = "awattar_monthly_gross_price"
+        self._unique_id = f"awattar_monthly_gross_price_{hash(URL)}"
         self._price_cent_per_kwh = None
 
     @property
