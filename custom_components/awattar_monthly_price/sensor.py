@@ -47,7 +47,7 @@ async def async_setup_platform(hass: HomeAssistant, config, async_add_entities, 
     """Set up the sensor platform."""
     async_add_entities([AwattarMonthlyNetPriceSensor(hass), AwattarMonthlyGrossPriceSensor(hass)])
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up the aWATTar Monthly Price platform via config entry."""
     await async_setup_platform(hass, entry.data, async_add_entities)
     return True
