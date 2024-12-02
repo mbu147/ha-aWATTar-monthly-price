@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import logging
 from homeassistant.helpers.entity import Entity
 from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
 
