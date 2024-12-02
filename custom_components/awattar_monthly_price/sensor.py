@@ -45,7 +45,7 @@ def extract_prices(tables):
 
 async def async_setup_platform(hass: HomeAssistant, config, async_add_entities, discovery_info=None):
     """Set up the sensor platform."""
-    async_add_entities([AwattarMonthlyNetPriceSensor(hass), AwattarMonthlyGrossPriceSensor(hass)])
+    async_add_entities([AwattarMonthlyNetPriceSensor(hass, config), AwattarMonthlyGrossPriceSensor(hass, config)])
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up the aWATTar Monthly Price platform via config entry."""
