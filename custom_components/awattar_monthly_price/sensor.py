@@ -45,7 +45,7 @@ def extract_prices(tables):
 
 async def async_setup_platform(hass: HomeAssistant, config, async_add_entities, discovery_info=None):
     """Set up the sensor platform."""
-    async_add_entities([AwattarMonthlyNetPriceSensor(hass, config), AwattarMonthlyGrossPriceSensor(hass, config)])
+    async_add_entities([AwattarMonthlyNetPriceSensor(hass), AwattarMonthlyGrossPriceSensor(hass)])
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up the aWATTar Monthly Price platform via config entry."""
@@ -59,7 +59,7 @@ class AwattarMonthlyNetPriceSensor(Entity):
         self._hass = hass
         self._state = None
         self._name = "aWATTar Monthly Net Price"
-        self._unique_id = f"awattar_monthly_net_price_{hash(URL)}"
+        self._unique_id = "awattar_monthly_net_price"
         self._price_cent_per_kwh = None
 
     @property
@@ -108,7 +108,7 @@ class AwattarMonthlyGrossPriceSensor(Entity):
         self._hass = hass
         self._state = None
         self._name = "aWATTar Monthly Gross Price"
-        self._unique_id = f"awattar_monthly_gross_price_{hash(URL)}"
+        self._unique_id = "awattar_monthly_gross_price"
         self._price_cent_per_kwh = None
 
     @property
