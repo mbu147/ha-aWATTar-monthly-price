@@ -46,4 +46,9 @@ class AwattarMonthlyPriceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> SchemaOptionsFlowHandler:
         """Get the options flow for this handler."""
-        return SchemaOptionsFlowHandler(config_entry, OPTIONS_SCHEMA)
+        # Define the options flow steps as a dictionary.
+        # The key "init" is standard for the first or only step.
+        options_flow_steps = {
+            "init": SchemaFlowFormStep(OPTIONS_SCHEMA)
+        }
+        return SchemaOptionsFlowHandler(config_entry, options_flow_steps)
