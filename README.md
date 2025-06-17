@@ -1,42 +1,74 @@
-# aWATTar Monthly Price
+# aWATTar Monthly Price for Home Assistant
 
-A Home Assistant integration that fetches monthly energy prices from aWATTar and provides them as sensors.
+This Home Assistant integration fetches the monthly energy prices (net and gross) from the aWATTar Austria website (`https://www.awattar.at/tariffs/monthly`) and provides them as sensors.
+
+## Features
+
+*   Provides two sensors:
+    *   `sensor.awattar_monthly_net_price`: The net energy price in EUR/kWh.
+    *   `sensor.awattar_monthly_gross_price`: The gross energy price in EUR/kWh.
+*   Prices are updated periodically.
+*   The update interval (scan interval) can be configured via the integration's options in the Home Assistant UI.
 
 ## Installation
 
-### Installation via HACS
+### Via HACS (Recommended)
 
-1. **Install HACS**: If you haven't already, install HACS (Home Assistant Community Store) following the instructions on the [HACS website](https://hacs.xyz/).
-
-2. **Add the integration**: Open HACS in Home Assistant and navigate to "Integrations". Click the "+" button and then "Custom repositories".
-
-3. **Add the repository URL**: Add the URL of this repository (`https://github.com/mbu147/ha-aWATTar-monthly-price`) and select the type `Integration`.
-
-4. **Complete the installation**: After adding the repository, you will find it under HACS integrations. Install the integration.
-
-5. **Add the integration**: Add the configuration in Settings > Devices & Services:
+1.  Ensure you have [HACS (Home Assistant Community Store)](https://hacs.xyz/) installed.
+2.  Go to HACS > Integrations.
+3.  Click the three dots in the top right corner and select "Custom repositories".
+4.  Add the URL to this repository: `https://github.com/mbu147/ha-aWATTar-monthly-price` and select "Integration" as the category.
+5.  Click "ADD".
+6.  You should now be able to find "aWATTar Monthly Price" in the HACS integrations list. Click "INSTALL".
+7.  Restart Home Assistant.
 
 ### Manual Installation
 
-1. **Download the files**: Download all the files from this repository and place them in a new directory `custom_components/awattar_monthly_price` in your Home Assistant configuration directory.
+1.  Download the latest release or clone the repository: `https://github.com/mbu147/ha-aWATTar-monthly-price`.
+2.  Copy the `custom_components/awattar_monthly_price` directory into your Home Assistant `custom_components` directory.
+    *   If the `custom_components` directory doesn't exist, create it in your Home Assistant configuration directory.
+3.  Restart Home Assistant.
 
-2. **Add the configuration**: Add the following line to your `configuration.yaml`:
-   ```yaml
-   sensor:
-     - platform: awattar_monthly_price
-   ```
+## Configuration
 
-3. **Install dependencies**: Ensure you have the required dependencies installed:
-   ```sh
-   pip install beautifulsoup4
-   ```
+1.  Go to **Settings > Devices & Services** in Home Assistant.
+2.  Click the **+ ADD INTEGRATION** button in the bottom right.
+3.  Search for "aWATTar Monthly Price" and select it.
+4.  The integration will be added. No further configuration is required during this step.
 
-4. **Restart Home Assistant**: Restart Home Assistant to load the integration.
+### Configuring the Update Interval
 
-## Usage
+Once the integration is added, you can configure the update interval:
 
-After installation and configuration, the integration will add two sensors:
-- `sensor.awattar_monthly_net_price`: Shows the monthly net price in cents/kWh.
-- `sensor.awattar_monthly_gross_price`: Shows the monthly gross price in cents/kWh.
+1.  Go to **Settings > Devices & Services**.
+2.  Find the "aWATTar Monthly Price" integration card.
+3.  Click on **CONFIGURE** (or the three-dot menu and then "Options").
+4.  You will see an option to set the "Scan interval in hours". Enter your desired interval (e.g., `6` for every 6 hours, default is 6).
+5.  Click **SUBMIT**. The new interval will take effect.
 
-These sensors will automatically appear in your Home Assistant interface and update regularly.
+## Sensors
+
+The integration will create the following sensors:
+
+*   **`sensor.awattar_monthly_net_price`**
+    *   State: Current net price in EUR/kWh.
+    *   Attributes:
+        *   `price_cent_per_kwh`: Net price in Cent/kWh.
+*   **`sensor.awattar_monthly_gross_price`**
+    *   State: Current gross price in EUR/kWh.
+    *   Attributes:
+        *   `price_cent_per_kwh`: Gross price in Cent/kWh.
+
+## Troubleshooting
+
+*   Check the Home Assistant logs for any error messages related to `awattar_monthly_price` or `custom_components.awattar_monthly_price`.
+*   Ensure the aWATTar website (`https://www.awattar.at/tariffs/monthly`) is accessible from your Home Assistant instance.
+*   If you encounter issues after an update, try removing and re-adding the integration.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request on GitHub: `https://github.com/mbu147/ha-aWATTar-monthly-price`
+
+## Disclaimer
+
+This integration scrapes data from the aWATTar website. Changes to the website structure may break this integration. The maintainers of this integration are not affiliated with aWATTar. Use at your own risk.

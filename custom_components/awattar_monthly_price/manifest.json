@@ -3,9 +3,12 @@
   "name": "aWATTar Monthly Price",
   "version": "0.0.2",
   "documentation": "https://github.com/mbu147/ha-aWATTar-monthly-price",
-  "requirements": ["beautifulsoup4"],
+  "requirements": ["requests", "beautifulsoup4"],
   "dependencies": [],
   "codeowners": ["@mbu147"],
   "iot_class": "cloud_polling",
-  "config_flow": true
+  "config_flow": true,
+  "options_flow": {
+    "handler": "awattar_monthly_price.config_flow.AwattarMonthlyPriceConfigFlow.async_get_options_flow"
+  }
 }
