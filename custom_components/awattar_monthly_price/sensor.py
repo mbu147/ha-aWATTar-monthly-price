@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import logging
-from homeassistant.helpers.entity import Entity
-from homeassistant.core import HomeAssistant, callback # callback is not used, consider removing if not planned
+import functools
+from homeassistant.helpers.entity import Entity, DeviceInfo
+from homeassistant.core import HomeAssistant, callback 
 from homeassistant.config_entries import ConfigEntry
 from datetime import timedelta
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed 
@@ -25,7 +26,11 @@ async def fetch_prices(hass: HomeAssistant):
     """Scrape the aWATTar website to extract both net and gross prices."""
     _LOGGER.debug(f"Attempting to fetch prices from {URL}")
     try:
-        response = await hass.async_add_executor_job(requests.get, URL, timeout=10)
+        # Create a partial function with URL and timeout already bound to requests.get
+        # This ensures timeout is an argument for requests.get, not async_add_executor_job
+        func_to_run = functools.partial(requests.get, URL, timeout=10)
+        response = await hass.async_add_executor_job(func_to_run)
+        
         response.raise_for_status()
         
         soup = BeautifulSoup(response.text, "html.parser")
@@ -137,9 +142,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     # Fetch initial data so we have data when entities subscribe
     await coordinator.async_config_entry_first_refresh()
 
+    # Define device_info here, to be passed to sensors
+    # It's common to use the config entry's unique ID for the device identifier
+    # if the integration represents a single device or service instance.
+    device_info = DeviceInfo(
+        identifiers={(DOMAIN, entry.entry_id)},
+        name="aWATTar Monthly Prices", # Or entry.title if you set a title
+        manufacturer="aWATTar",
+        model="Monthly Tariff Scraper",
+        # sw_version="Your Integration Version", # You can get this from manifest.json
+        # entry_type=DeviceEntryType.SERVICE, # If applicable
+    )
+
     async_add_entities([
-        AwattarMonthlyNetPriceSensor(coordinator),
-        AwattarMonthlyGrossPriceSensor(coordinator)
+        AwattarMonthlyNetPriceSensor(coordinator, entry, device_info), # Pass device_info
+        AwattarMonthlyGrossPriceSensor(coordinator, entry, device_info) # Pass device_info
     ])
     return True
 
@@ -170,13 +187,16 @@ class AwattarMonthlyPriceSensorBase(Entity):
     # as the DataUpdateCoordinator handles updates.
     _attr_should_poll = False 
 
-    def __init__(self, coordinator: DataUpdateCoordinator, price_type: str):
+    def __init__(self, coordinator: DataUpdateCoordinator, entry: ConfigEntry, device_info: DeviceInfo, price_type: str): # Added entry and device_info
         """Initialize the sensor."""
         self.coordinator = coordinator
         self._price_type = price_type # "net" or "gross"
         self._attr_price_cent_per_kwh = None # Initialize attribute
-        # Link entity to the coordinator for automatic state updates
-        self._attr_device_info = coordinator.device_info # If you set up device_info on coordinator
+        self._attr_device_info = device_info # Assign the passed device_info
+        # Unique ID should be truly unique across all entities of this integration
+        # Combining domain, entry_id, and price_type ensures this.
+        self._attr_unique_id = f"{entry.entry_id}_{self._price_type}"
+
 
     @property
     def available(self) -> bool:
@@ -237,26 +257,18 @@ class AwattarMonthlyPriceSensorBase(Entity):
 class AwattarMonthlyNetPriceSensor(AwattarMonthlyPriceSensorBase):
     """Representation of the aWATTar monthly net price sensor."""
 
-    def __init__(self, coordinator: DataUpdateCoordinator):
+    def __init__(self, coordinator: DataUpdateCoordinator, entry: ConfigEntry, device_info: DeviceInfo): # Added entry and device_info
         """Initialize the net price sensor."""
-        super().__init__(coordinator, "net")
+        super().__init__(coordinator, entry, device_info, "net") # Pass entry and device_info
         self._attr_name = "aWATTar Monthly Net Price"
-        # Consider using entry.entry_id for a truly unique part if multiple instances were allowed
-        self._attr_unique_id = f"{DOMAIN}_net_price" 
-
-    # name and unique_id are now set as _attr_name and _attr_unique_id in __init__
-    # and will be handled by the Entity base class, so explicit @property methods are not needed
-    # unless you have custom logic for them.
+        # Unique ID is now set in the base class
 
 
 class AwattarMonthlyGrossPriceSensor(AwattarMonthlyPriceSensorBase):
     """Representation of the aWATTar monthly gross price sensor."""
 
-    def __init__(self, coordinator: DataUpdateCoordinator):
+    def __init__(self, coordinator: DataUpdateCoordinator, entry: ConfigEntry, device_info: DeviceInfo): # Added entry and device_info
         """Initialize the gross price sensor."""
-        super().__init__(coordinator, "gross")
+        super().__init__(coordinator, entry, device_info, "gross") # Pass entry and device_info
         self._attr_name = "aWATTar Monthly Gross Price"
-        self._attr_unique_id = f"{DOMAIN}_gross_price"
-
-    # Similar to NetPriceSensor, name and unique_id are handled by Entity base class
-    # via _attr_name and _attr_unique_id.
+        # Unique ID is now set in the base class
